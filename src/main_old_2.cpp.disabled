@@ -1,0 +1,100 @@
+#include <Arduino.h>
+#include <cmath>
+#include <main.hpp>
+
+double deg_radian(int i)
+{
+  /* 3ピン:0度 4ピン:45度 5ピン:90度 6ピン:135度 7ピン:180度 8ピン:225度 9ピン:270度 10ピン:315度 と考える */
+  double Deg[8] = {0.0,45.0,90.0,135.0,180.0,225.0,270.0,315.0};
+  double radian = Deg[i] * M_PI / 180.0;
+
+  return (radian);
+}
+
+void setup()
+{
+  Serial.begin(9600);
+}
+
+double degradian[8] = {deg_radian(0),deg_radian(1),deg_radian(2),deg_radian(3),deg_radian(4),deg_radian(5),deg_radian(6),deg_radian(7),} ;
+int result[11]; //resultという配列を宣言
+int min_pin = 0; // 最小値のピンを定義
+
+void loop()
+{
+  int k = 3000; // 適当な値kを宣言（最大値より大きく）
+  const int NOT_FOUND_THRESHOLD = 900; // 反応してないラインの大体の値
+  const int wait = 10; //更新時間
+  for (int i = 3; i < 11; i++)
+  {
+    int val = analogRead(i);
+    result[i] = val;
+    // Serial.print("[" + String(i) + "] " + String(val) + " "); // iピンの値を出力
+    if (val <= k) // もしも、iピンの値が kより小さいなら
+    {
+      k = val; // kにiピンの値を代入
+      min_pin = i; 
+    }
+  }
+
+  // ① 全ピンを読んだあと
+  if (k > NOT_FOUND_THRESHOLD)
+  {
+    Serial.println("ボールが見つかりません");
+    delay(wait);
+    return;  // ← ここで loop() を抜ける
+  }
+
+  // ② 見つかった場合だけ、以下を実行
+  Serial.print("最小値のピン" + String(min_pin) + ":" + String(k));
+
+
+  // 角度を求める
+  double vx = 0, vy = 0;
+
+  for (int i = 3;i < 11;i ++)
+  {
+    double w = 1.0 / (result[i] + 1);
+    double ang = deg_radian(i - 3);
+    vx += w * cos(ang);
+    vy += w * sin(ang);
+  }
+
+
+  double theta = atan2(vy, vx) * 180.0 / M_PI; /* radian * 180.0 / M_PI はradianを度(deg)に直す公式 */
+  if (theta < 0) theta += 360;
+
+  Serial.println("角度：" + String(theta) + "°");
+  delay(wait);
+}
+
+
+
+// ＜文字列の型：String＞
+// ＜整数の型：int＞
+// ＜小数の型：float もしくは double＞ 123 -> "123"
+
+// Serial.begin(ボーレート数);
+// Serial.println(文字列); 改行付き
+// Serial.print(文字列);
+/*
+  Serial.print(analogRead(3));
+  Serial.print(" ");
+  Serial.print(String(analogRead(4)) + " ");
+*/
+
+// pinMode(ピン,ピンモード); ピン設定関数(ピンモード：OUTPUT,INPUT)
+// ＜INPUTなら＞
+// analogRead(ピン); アナログデータを取得(0~1023)
+// digitalRead(ピン); デジタルデータ取得(LOWかHIGH)
+// ＜OUTPUTなら＞
+// analogWrite(ピン);
+// digitalWrite(ピン);
+
+// delay(10); //10ms待つ
+
+/*
+for(int i = 0;i < 1;i ++){
+}
+*/
+
