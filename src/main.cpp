@@ -1,4 +1,5 @@
 #include <arduino.h>
+#include <Adafruit_BNO055.h>
 #include "ir.h"
 
 double normalizeAngle(double deg)
