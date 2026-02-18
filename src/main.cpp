@@ -2,7 +2,7 @@
 #include <Adafruit_BNO055.h>
 #include "ir.h"
 
-double normalizeAngle(double deg)
+float normalizeAngle(float deg)
 {
     while (deg > 180) deg -= 360;
     while (deg < -180) deg += 360;
@@ -26,7 +26,7 @@ void loop()
         return;
     }
 
-    double ballAngle = IR_getAngle();
+    float ballAngle = IR_getAngle();
     Serial.println("ボールの角度は" + String(ballAngle) + "°");
 
     delay(10);
