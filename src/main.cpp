@@ -1,6 +1,6 @@
 #include <arduino.h>
 #include <Adafruit_BNO055.h>
-#include "ir.h"
+#include "ir.hpp"
 
 float normalizeAngle(float deg)
 {
@@ -11,7 +11,7 @@ float normalizeAngle(float deg)
 
 void setup()
 {
-    Serial.begin(9600);
+    Serial.begin(115200);
     IR_init();
 }
 
@@ -28,6 +28,11 @@ void loop()
 
     float ballAngle = IR_getAngle();
     Serial.println("ボールの角度は" + String(ballAngle) + "°");
+
+    // C-style用に角度を最大1023にする。
+    float ___ = ballAngle * 1023 / 360;
+
+    Serial.print(___);
 
     delay(10);
 }

@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <math.h>
-#include "IR.h"
+#include "IR.hpp"
 
 // =====定数=====
 static const int IR_FIRST_PIN = 3;
@@ -35,7 +35,7 @@ void IR_init()
 // =============================
 void IR_update()
 {
-    int minVal = 3000;
+    int minVal = 1024;
 
     // 全IR読み取り
     for (int pin = IR_FIRST_PIN; pin <= IR_LAST_PIN; pin++)
@@ -65,7 +65,7 @@ void IR_update()
     }
 
     //角度計算
-    float theta = atan2(vy,vx) * M_PI / 180.0;
+    float theta = atan2(vy,vx) * 180.0 / M_PI;
     if (theta < 0.0) theta += 360.0;
 
     ballAngle = theta;
