@@ -1,6 +1,8 @@
 #pragma once
 
-void IR_init();
-void IR_update();
-bool IR_ballFound();
-float IR_getAngle();
+void ir_init();
+void ir_run();
+
+// externは外部から値を呼び出す。
+extern bool ballFound;
+extern float ballAngle;

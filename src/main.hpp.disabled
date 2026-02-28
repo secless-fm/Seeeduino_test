@@ -1,3 +1,0 @@
-#pragma once
-
-double deg_radian(int i);

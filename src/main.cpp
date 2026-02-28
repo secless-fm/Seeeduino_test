@@ -1,38 +1,32 @@
 #include <arduino.h>
-#include <Adafruit_BNO055.h>
-#include "ir.hpp"
+#include "IR.hpp"
+#include "BNO055.hpp"
 
-float normalizeAngle(float deg)
-{
-    while (deg > 180) deg -= 360;
-    while (deg < -180) deg += 360;
-    return deg;
-}
+const int IR_pin = 0;
+const int gyro_pin = 1;
 
 void setup()
 {
     Serial.begin(115200);
-    IR_init();
+    ir_init();
+    BNO_init();
 }
 
 void loop()
 {
-    IR_update();
-
-    if (!IR_ballFound) /* !は否定演算子 「falseだったら」と考える */
-    {
-        Serial.println("ボールが見つかりません");
-        delay(10);
-        return;
+    ir_run();
+    if(ballFound) {
+        analogWrite(IR_pin, ballAngle); // IR_pinに値を送る。
+    }else{
+        Serial.print("ボールが見つかりません笑");
     }
 
-    float ballAngle = IR_getAngle();
-    Serial.println("ボールの角度は" + String(ballAngle) + "°");
-
-    // C-style用に角度を最大1023にする。
-    float ___ = ballAngle * 1023 / 360;
-
-    Serial.print(___);
-
+    BNO_run();
+    if (BNO_start){
+        analogWrite(gyro_pin, robotAngle); // gyro_pinに値を送る。
+    }else{
+        Serial.print("BNOが起動してないのかもです!（妹）");
+    }
+    
     delay(10);
 }
