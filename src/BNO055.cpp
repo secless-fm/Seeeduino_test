@@ -19,6 +19,7 @@ static float normalizeangle(float angle)
 */
 
 const int Button_pin = 1;
+bool BNO_start = false;
 
 void BNO_init()
 {
@@ -30,7 +31,7 @@ void BNO_init()
     if (!bno.begin())
     {
     Serial.println("BNO not detected");
-    bool BNO_start = false;
+    BNO_start = false;
     while (1)
     ;
     }
