@@ -1,3 +1,5 @@
+#include "function.hpp"
+
 #include "BNO055.hpp"
 #include <Arduino.h>
 #include <Wire.h>
@@ -5,18 +7,10 @@
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 
+
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x29);
 
 static float val = 0;
-
-/*
-static float normalizeangle(float angle)
-{
-  while (angle < -180.0) angle += 360.0;
-  while (angle > 180.0) angle -= 360.0;
-  return angle;
-}
-*/
 
 const int Button_pin = 1;
 bool BNO_start = false;
@@ -24,9 +18,7 @@ bool BNO_start = false;
 void BNO_init()
 {
     pinMode(Button_pin, INPUT_PULLDOWN);
-    while (!Serial)
-    ;
-    Serial.print("BNO055 start   ");
+    Serial_start;
 
     if (!bno.begin())
     {
